@@ -16,6 +16,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.lang.demo.Bezier.Bezier"
+            android:label="@string/Bezier" >
+        </activity>
+
     </application>
 
 </manifest>

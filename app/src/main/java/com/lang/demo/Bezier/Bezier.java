@@ -13,7 +13,10 @@ public class Bezier extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new DrawingWithBezier(this));
+        setContentView(new AutoBezier(this));
+//        setContentView(new MySurefaceView(this));
+//        setContentView(new DrawingWithoutBezier(this));
+//        setContentView(new DrawingWithBezier(this));
     }
 
 }

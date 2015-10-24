@@ -2,6 +2,7 @@
     <string name="app_name">My Demo</string>
 
     <string name="Bezier">Bezier</string>
+    <string name="WaterDrop">WaterDrop</string>
 
     <string name="action_settings">Settings</string>
 </resources>

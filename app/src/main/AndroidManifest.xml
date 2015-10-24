@@ -22,6 +22,12 @@
             android:label="@string/Bezier" >
         </activity>
 
+        <activity
+            android:name="com.lang.demo.WaterDrop.WaterDrop"
+            android:label="@string/Bezier" >
+        </activity>
+
+
     </application>
 
 </manifest>

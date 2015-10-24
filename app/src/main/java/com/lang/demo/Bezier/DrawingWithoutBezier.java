@@ -49,6 +49,7 @@ public class DrawingWithoutBezier extends View {
     {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
+        canvas.drawColor(Color.BLACK);
         canvas.drawPath(mPath, mGesturePaint);
     }
 

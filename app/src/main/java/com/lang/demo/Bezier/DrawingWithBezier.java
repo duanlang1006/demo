@@ -25,7 +25,7 @@ public class DrawingWithBezier extends View{
         mGesturePaint.setAntiAlias(true);
         mGesturePaint.setStyle(Paint.Style.STROKE);
         mGesturePaint.setStrokeWidth(5);
-        mGesturePaint.setColor(Color.RED);
+        mGesturePaint.setColor(Color.WHITE);
     }
 
     @Override
@@ -50,6 +50,7 @@ public class DrawingWithBezier extends View{
     {
         // TODO Auto-generated method stub
         super.onDraw(canvas);
+        canvas.drawColor(Color.BLACK);
         //通过画布绘制多点形成的图形
         canvas.drawPath(mPath, mGesturePaint);
     }

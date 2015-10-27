@@ -11,15 +11,17 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
+import android.widget.LinearLayout;
 
 import com.lang.demo.R;
 
 /**
- * Created by android on 10/24/15.
+ * Created by android on 10/27/15.
  */
-public class WaterDropView extends View {
-    private final String TAG = "WaterDropView";
+public class WaterDropView extends LinearLayout {
+    private final String TAG = "WaterDropViewHeader";
+
+    private LinearLayout mFootmView;
 
     private Circle topCircle;
     private Circle bottomCircle;

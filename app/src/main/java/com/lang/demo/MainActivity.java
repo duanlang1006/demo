@@ -4,15 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.lang.demo.Bezier.Bezier;
-import com.lang.demo.WaterDrop.WaterDrop;
+import com.lang.demo.Bezier.BezierActivity;
+import com.lang.demo.WaterDrop.WaterDropActivity;
 
-public class Main extends Activity implements View.OnClickListener {
+public class MainActivity extends Activity implements View.OnClickListener {
     private final String TAG = "Main";
 
     private Button button1;
@@ -40,38 +38,19 @@ public class Main extends Activity implements View.OnClickListener {
         button2 = (Button)findViewById(R.id.button2);
         button2.setOnClickListener(this);
         button2.setText("水滴特效");
+
+        intent = new Intent(this, WaterDropActivity.class);
+        startActivity(intent);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.button1){
-            intent = new Intent(this, Bezier.class);
+            intent = new Intent(this, BezierActivity.class);
             startActivity(intent);
         } else if (v.getId() == R.id.button2){
-            intent = new Intent(this, WaterDrop.class);
+            intent = new Intent(this, WaterDropActivity.class);
             startActivity(intent);
         }
     }

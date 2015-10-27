@@ -7,7 +7,7 @@ import android.util.Log;
 /**
  * Created by lang on 10/23/15.
  */
-public class Bezier extends Activity {
+public class BezierActivity extends Activity {
     private final String TAG = "Bezier";
 
 

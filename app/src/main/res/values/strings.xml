@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">My Demo</string>
 
-    <string name="Bezier">Bezier</string>
-    <string name="WaterDrop">WaterDrop</string>
+    <string name="Bezier">贝塞尔曲线</string>
+
+
+
+    <string name="WaterDrop">水滴特效</string>
+    <string name="listfooterview_normal">查看更多</string>
+    <string name="listfooterview_upmove">松开载入更多</string>
 
     <string name="action_settings">Settings</string>
 </resources>

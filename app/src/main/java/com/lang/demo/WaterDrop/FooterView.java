@@ -15,7 +15,7 @@ import com.lang.demo.R;
  * Created by android on 10/27/15.
  */
 public class FooterView extends LinearLayout {
-    private final String TAG = "FooterView";
+    private final String TAG = "duanlang";
 
     private Context mContext;
 
@@ -23,7 +23,6 @@ public class FooterView extends LinearLayout {
 
     private LinearLayout mloadprogressbar;
     private TextView mloadtextview;
-
 
     public enum STATE {
         upmove,
@@ -38,6 +37,7 @@ public class FooterView extends LinearLayout {
 
     public FooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        Log.i(TAG, "FooterView");
         init(context);
     }
 
@@ -47,6 +47,7 @@ public class FooterView extends LinearLayout {
     }
 
     private void init(Context context) {
+        Log.i(TAG, "FooterView init");
         mContext = context;
         LinearLayout loadmoreView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.load, null);
         addView(loadmoreView);
@@ -57,11 +58,12 @@ public class FooterView extends LinearLayout {
         mloadprogressbar = (LinearLayout) findViewById(R.id.load_progressbar);
         mloadtextview = (TextView) findViewById(R.id.load_hint_textview);
 
-        mloadprogressbar.setVisibility(VISIBLE);
+        mloadprogressbar.setVisibility(INVISIBLE);
         mloadtextview.setVisibility(VISIBLE);
     }
 
     public void setState(STATE state) {
+        Log.i(TAG, "state = " + state);
         mloadprogressbar.setVisibility(INVISIBLE);
         mloadtextview.setVisibility(INVISIBLE);
         if (state == STATE.loading) {

@@ -21,8 +21,6 @@ import com.lang.demo.R;
 public class WaterDropView extends LinearLayout {
     private final String TAG = "WaterDropViewHeader";
 
-    private LinearLayout mFootmView;
-
     private Circle topCircle;
     private Circle bottomCircle;
 
@@ -177,4 +175,22 @@ public class WaterDropView extends LinearLayout {
         return Math.asin((topCircle.getRadius() - bottomCircle.getRadius()) / (bottomCircle.getY() - topCircle.getY()));
     }
 
+    /**
+     * 完成的百分比
+     *
+     * @param percent between[0,1]
+     */
+    public void updateComleteState(float percent) {
+        if (percent < 0 || percent > 1) {
+            throw new IllegalStateException("completion percent should between 0 and 1!");
+        }
+        float top_r = (float) (mMaxCircleRadius - 0.25 * percent * mMaxCircleRadius);
+        float bottom_r = (mMinCircleRaidus - mMaxCircleRadius) * percent + mMaxCircleRadius;
+        float bottomCricleOffset = 2 * percent * mMaxCircleRadius;
+        topCircle.setRadius(top_r);
+        bottomCircle.setRadius(bottom_r);
+        bottomCircle.setY(topCircle.getY() + bottomCricleOffset);
+        requestLayout();
+        postInvalidate();
+    }
 }

@@ -30,10 +30,13 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
     private AbsListView.OnScrollListener mScrollListener;
 
     private ListView mListView;
-    private FooterView mFooterView;
+    private HeaderView mHeaderView;
 
     private boolean mEnablePullLoad;
     private boolean mPullLoading;
+
+
+    private FooterView mFooterView;
 
 
     private float mLastY = -1;  //记录上一次y坐标值
@@ -71,16 +74,20 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.waterdrop_main);
-
         mListView = (ListView) findViewById(R.id.listView);
         mListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getdata()));
         mScroller = new Scroller(this, new DecelerateInterpolator());
         mListView.setOnTouchListener(this);
         mListView.setOnScrollListener(this);
 
-        mFooterView = (FooterView) findViewById(R.id.footview);
-        setPullLoadEnable(true);
+        //init header view
+        mHeaderView = new HeaderView(this);
+//        mHeaderView.setStateChangedListener(this);
+        mListView.addHeaderView(mHeaderView);
 
+        //init footer view
+        mFooterView = (FooterView)findViewById(R.id.footview);
+        setPullLoadEnable(true);
     }
 
     private List<String> getdata() {
@@ -99,12 +106,14 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
             mFooterView.hide();
             mFooterView.setOnClickListener(null);
         } else {
+            Log.i(TAG, "mFooterView.show()");
             mPullLoading = false;
             mFooterView.show();
             mFooterView.setState(FooterView.STATE.normal);
             mFooterView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.i(TAG, "mFooterView.onClick");
                     mFooterView.setEnabled(false);
                     startLoad();
                 }
@@ -160,6 +169,16 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
         });
     }
 
+    private void updateHeaderHeight(int height) {
+        mHeaderView.setVisiableHeight(height);
+    }
+
+    private void updateHeaderHeight(float delta) {
+        Log.i(TAG, "updateHeaderHeight delta = " + delta);
+        int newHeight = (int) delta + mHeaderView.getVisiableHeight();
+        updateHeaderHeight(newHeight);
+    }
+
     private void updateFooterHeight(float delta) {
         Log.i(TAG, "updateFooterHeight delta = " + delta);
         int height = mFooterView.getBottomMargin() + (int) delta;
@@ -177,6 +196,7 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
         Log.i(TAG, "resetFooterHeight");
         int bottomMargin = mFooterView.getBottomMargin();
         if (bottomMargin > 0) {
+            Log.i(TAG, "bottomMargin > 0");
             mScrollBack = ScrollBack.footer;
             mScroller.startScroll(0, bottomMargin, 0, -bottomMargin, SCROLL_DURATION);
             mListView.invalidate();
@@ -188,6 +208,7 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
         Log.i(TAG, "computeScroll");
         if (mScroller.computeScrollOffset()) {
             if (mScrollBack == ScrollBack.header) {
+                Log.i(TAG, "computeScroll  ScrollBack.header");
 //                updateHeaderHeight(mScroller.getCurrY());
 //                if (mScroller.getCurrY() < 2 && mHeaderView.getCurrentState() == WaterDropListViewHeader.STATE.end) {
 //                    //停止滚动了
@@ -202,8 +223,6 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
         }
         mListView.computeScroll();
     }
-
-
 
 
     /**
@@ -223,17 +242,18 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.i(TAG, "MotionEvent.ACTION_DOWN");
                 mLastY = event.getRawY();
                 isTouchingScreen = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.i(TAG, "MotionEvent.ACTION_MOVE");
                 float deltaY = event.getRawY() - mLastY;
                 mLastY = deltaY;
                 if ((mListView.getLastVisiblePosition() == mTotalItemCount - 1) &&
                         (mFooterView.getBottomMargin() > 0 || deltaY < 0)) {
                     updateFooterHeight(-deltaY / 1.8f);
+                } else if (mListView.getFirstVisiblePosition() == 0 &&
+                        (mHeaderView.getVisiableHeight() > 0 || deltaY > 0)) {
+                    updateHeaderHeight(deltaY / 1.8f);
                 }
                 break;
             default:
@@ -253,7 +273,6 @@ public class WaterDropActivity extends Activity implements View.OnTouchListener,
 
         return super.onTouchEvent(event);
     }
-
 
     /**
      * Callback method to be invoked while the list view or grid view is being scrolled. If the

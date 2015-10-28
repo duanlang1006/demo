@@ -1,6 +1,5 @@
 package com.lang.demo.WaterDrop;
 
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -9,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by android on 10/24/15.
+ * Created by android on 10/28/15.
  */
 public class Utils {
 

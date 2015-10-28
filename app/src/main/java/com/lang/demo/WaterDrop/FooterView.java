@@ -2,7 +2,6 @@ package com.lang.demo.WaterDrop;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 import com.lang.demo.R;
 
 /**
- * Created by android on 10/27/15.
+ * Created by android on 10/28/15.
  */
 public class FooterView extends LinearLayout {
     private final String TAG = "duanlang";
@@ -20,87 +19,79 @@ public class FooterView extends LinearLayout {
     private Context mContext;
 
     private View mContentView;
-
-    private LinearLayout mloadprogressbar;
-    private TextView mloadtextview;
+    private View mProgressBar;
+    private TextView mHintView;
+    private TextView txt_progresstext;
+    private LinearLayout layout_progress;
 
     public enum STATE {
-        upmove,
-        loading,
-        normal
+        normal,
+        ready,
+        loading
     }
 
     public FooterView(Context context) {
         super(context);
-        init(context);
+        initWithContext(context);
     }
 
     public FooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Log.i(TAG, "FooterView");
-        init(context);
+        initWithContext(context);
     }
 
-    public FooterView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    private void init(Context context) {
-        Log.i(TAG, "FooterView init");
+    private void initWithContext(Context context) {
         mContext = context;
-        LinearLayout loadmoreView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.load, null);
-        addView(loadmoreView);
-        loadmoreView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout footview = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.foot, null);
+        addView(footview);
+        footview.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        mContentView = loadmoreView.findViewById(R.id.load_progressbar_layout);
+        mContentView = footview.findViewById(R.id.load_progressbar_layout);
+        mProgressBar = footview.findViewById(R.id.load_progressbar);
+        mHintView = (TextView) footview.findViewById(R.id.load_hint_textview);
+        layout_progress = (LinearLayout) footview.findViewById(R.id.progresslayout);
 
-        mloadprogressbar = (LinearLayout) findViewById(R.id.load_progressbar);
-        mloadtextview = (TextView) findViewById(R.id.load_hint_textview);
-
-        mloadprogressbar.setVisibility(INVISIBLE);
-        mloadtextview.setVisibility(VISIBLE);
     }
 
     public void setState(STATE state) {
-        Log.i(TAG, "state = " + state);
-        mloadprogressbar.setVisibility(INVISIBLE);
-        mloadtextview.setVisibility(INVISIBLE);
-        if (state == STATE.loading) {
-            mloadprogressbar.setVisibility(VISIBLE);
-        } else if (state == STATE.normal) {
-            mloadtextview.setVisibility(VISIBLE);
-            mloadtextview.setText(getResources().getString(R.string.listfooterview_normal));
-        } else if (state == STATE.upmove) {
-            mloadtextview.setVisibility(View.VISIBLE);
-            mloadtextview.setText(getResources().getString(R.string.listfooterview_upmove));
+        mProgressBar.setVisibility(INVISIBLE);
+        mHintView.setVisibility(INVISIBLE);
+        layout_progress.setVisibility(INVISIBLE);
+        if (state == STATE.ready) {
+            mHintView.setVisibility(View.VISIBLE);
+            mHintView.setText(getResources().getString(R.string.listfooterview_ready));
+        } else if (state == STATE.loading) {
+            mProgressBar.setVisibility(VISIBLE);
+            layout_progress.setVisibility(VISIBLE);
+        } else {
+            mHintView.setVisibility(View.VISIBLE);
+            mHintView.setText(getResources().getString(R.string.listfooterview_normal));
         }
     }
 
-    public void hide() {
-        LayoutParams lp = (LayoutParams) mContentView.getLayoutParams();
-        lp.height = 0;
-        mContentView.setLayoutParams(lp);
+    public void show() {
+        LayoutParams layoutParams = (LayoutParams) mContentView.getLayoutParams();
+        layoutParams.height = LayoutParams.WRAP_CONTENT;
+        mContentView.setLayoutParams(layoutParams);
     }
 
-    public void show() {
-        LayoutParams lp = (LayoutParams) mContentView.getLayoutParams();
-        lp.height = LayoutParams.WRAP_CONTENT;
-        mContentView.setLayoutParams(lp);
+    public void hide() {
+        LayoutParams layoutParams = (LayoutParams) mContentView.getLayoutParams();
+        layoutParams.height = 0;
+        mContentView.setLayoutParams(layoutParams);
     }
 
     public void setBottomMargin(int height) {
-        Log.i(TAG, "setBottomMargin  height = " + height);
-        if (height < 0) return;
-        LayoutParams lp = (LayoutParams) mContentView.getLayoutParams();
-        lp.bottomMargin = height;
-        mContentView.setLayoutParams(lp);
+        if (height < 0)
+            return;
+        LayoutParams layoutParams = (LayoutParams) mContentView.getLayoutParams();
+        layoutParams.bottomMargin = height;
+        mContentView.setLayoutParams(layoutParams);
     }
 
     public int getBottomMargin() {
-        Log.i(TAG, "getBottomMargin");
-        LayoutParams lp = (LayoutParams) mContentView.getLayoutParams();
-        return lp.bottomMargin;
+        LayoutParams layoutParams = (LayoutParams) mContentView.getLayoutParams();
+        return layoutParams.bottomMargin;
     }
 
 }

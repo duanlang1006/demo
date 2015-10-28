@@ -10,13 +10,13 @@
         android:id="@+id/waterdrop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        waterdrop:max_circle_radius = "20dp"
+        waterdrop:bottomcircle_x="20dp"
+        waterdrop:bottomcircle_y="20dp"
+        waterdrop:max_circle_radius="20dp"
         waterdrop:min_circle_radius="5dp"
-        waterdrop:waterdrop_color="#9ba2ab"
         waterdrop:topcircle_x="20dp"
         waterdrop:topcircle_y="20dp"
-        waterdrop:bottomcircle_x="20dp"
-        waterdrop:bottomcircle_y="20dp"/>
+        waterdrop:waterdrop_color="#9ba2ab" />
 
     <ProgressBar
         android:id="@+id/header_progressbar"

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +109,7 @@ public class HeaderView extends FrameLayout {
 
     private void handleStateNormal() {
         mWaterDropView.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.GONE);
         mContainer.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL);
     }
 
@@ -142,6 +143,24 @@ public class HeaderView extends FrameLayout {
         mProgressBar.setVisibility(View.GONE);
     }
 
+
+    public void setVisiableHeight(int height) {
+        if (height < 0)
+            height = 0;
+        LayoutParams lp = (LayoutParams) mContainer.getLayoutParams();
+        lp.height = height;
+        mContainer.setLayoutParams(lp);
+        //通知水滴进行更新
+        if (mState == STATE.stretch) {
+            float pullOffset = (float) Utils.mapValueFromRangeToRange(height, stretchHeight, readyHeight, 0, 1);
+            if (pullOffset < 0 || pullOffset > 1) {
+                throw new IllegalArgumentException("pullOffset should between 0 and 1!" + mState + " " + height);
+            }
+            Log.e("pullOffset", "pullOffset:" + pullOffset);
+            mWaterDropView.updateComleteState(pullOffset);
+        }
+
+    }
 
     public int getVisiableHeight() {
         return mContainer.getHeight();

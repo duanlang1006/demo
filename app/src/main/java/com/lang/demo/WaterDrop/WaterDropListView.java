@@ -2,6 +2,7 @@ package com.lang.demo.WaterDrop;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -36,7 +37,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
     private boolean isTouchingScreen = false;//手指是否触摸屏幕
     private final static int SCROLL_DURATION = 400; // scroll back duration
 
-
     private enum ScrollBack {
         header,
         footer
@@ -62,7 +62,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
 
     private void initWithContext(Context context) {
         mScroller = new Scroller(context, new DecelerateInterpolator());
-        super.setOnScrollListener(this);
         // XListView need the scroll event, and it will dispatch the event to
         // user's listener (as a proxy).
         super.setOnScrollListener(this);
@@ -78,7 +77,7 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
 
     /**
      * Sets the data behind this ListView.
-     * <p/>
+     * <p>
      * The adapter passed to this method may be wrapped by a {@link WrapperListAdapter},
      * depending on the ListView features currently in use. For instance, adding
      * headers and/or footers will cause the adapter to be wrapped.
@@ -117,11 +116,17 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         }
     }
 
-    private void startLoadMore() {
-        mPullLoading = true;
-        mFooterView.setState(FooterView.STATE.loading);
-        if (null != mListViewListener) {
-            mListViewListener.onLoadMore();
+
+
+    public void stopRefresh() {
+        Log.i(TAG, "stopRefresh");
+        if (mHeaderView.getCurrentState() == HeaderView.STATE.refreshing) {
+            mHeaderView.updateState(HeaderView.STATE.end);
+            if (!isTouchingScreen) {
+                resetHeaderHeight();
+            }
+        } else {
+            throw new IllegalStateException("can not stop refresh while it is not refreshing!");
         }
     }
 
@@ -133,43 +138,11 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         mFooterView.setEnabled(true);
     }
 
-    public void stopRefresh() {
-
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mLastY == -1) {
-            mLastY = ev.getRawY();
+    private void invokeOnScrolling() {
+        if (mScrollListener instanceof OnXScrollListener) {
+            OnXScrollListener l = (OnXScrollListener) mScrollListener;
+            l.onXScrolling(this);
         }
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastY = ev.getRawY();
-                isTouchingScreen = true;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                final float deltaY = ev.getRawY() - mLastY;
-                if (getFirstVisiblePosition() == 0 && (mHeaderView.getVisiableHeight() > 0 || deltaY > 0)) {
-                    updateHeaderHeight(-deltaY / OFFSET_RADIO);
-                    invokeOnScrolling();
-                } else if (getLastVisiblePosition() == mTotalItemCount - 1 && (mFooterView.getBottomMargin() > 0 || deltaY < 0)) {
-                    updateFooterHeight(-deltaY / OFFSET_RADIO);
-                }
-                break;
-            default:
-                mLastY = -1;
-                isTouchingScreen = false;
-
-                if (getLastVisiblePosition() == mTotalItemCount - 1) {
-                    if (mEnablePullLoad && mFooterView.getBottomMargin() > PULL_LOAD_MORE_DELTA) {
-                        startLoadMore();
-                    }
-                    resetFooterHeight();
-                }
-                break;
-        }
-        return super.onTouchEvent(ev);
     }
 
     private void updateHeaderHeight(int height) {
@@ -187,9 +160,8 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
                 //由end变成normal的逻辑：1、当前状态是end；2、下拉头高度小于一个极小值
                 mHeaderView.updateState(HeaderView.STATE.normal);
             }
-
         }
-        mHeaderView.setVisibility(height);      //动态设置HeaderView的高度
+        mHeaderView.setVisiableHeight(height);      //动态设置HeaderView的高度
     }
 
     private void updateHeaderHeight(float delta) {
@@ -197,40 +169,32 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         updateHeaderHeight(newheight);
     }
 
-    private void resetFooterHeight() {
-        int bottomMargin = mFooterView.getBottomMargin();
-        if (bottomMargin > 0) {
-            mScrollBack = ScrollBack.footer;
-            mScroller.startScroll(0, bottomMargin, 0, -bottomMargin, SCROLL_DURATION);
-            invalidate();
-        }
-    }
-
     /**
-     * Called by a parent to request that a child update its values for mScrollX
-     * and mScrollY if necessary. This will typically be done if the child is
-     * animating a scroll using a {@link Scroller Scroller}
-     * object.
+     * reset header view's height.
+     * 重置headerheight的高度
+     * 逻辑：1、如果状态处于非refreshing，则回滚到height=0状态2；2、如果状态处于refreshing，则回滚到stretchheight高度
      */
-    @Override
-    public void computeScroll() {
-        if (mScroller.computeScrollOffset()) {
-            if (mScrollBack == ScrollBack.header) {
-
-            } else {
-                mFooterView.setBottomMargin(mScroller.getCurrY());
-            }
-            postInvalidate();
-            invokeOnScrolling();
+    private void resetHeaderHeight() {
+        Log.i(TAG, "resetHeaderHeight");
+        int height = mHeaderView.getVisiableHeight();
+        if (height == 0) {
+            // not visible.
+            return;
         }
-        super.computeScroll();
-    }
-
-    private void invokeOnScrolling() {
-        if (mScrollListener instanceof OnXScrollListener) {
-            OnXScrollListener l = (OnXScrollListener) mScrollListener;
-            l.onXScrolling(this);
+        // refreshing and header isn't shown fully. do nothing.
+        if (mHeaderView.getCurrentState() == HeaderView.STATE.refreshing && height <= mHeaderView.getStretchHeight()) {
+            return;
         }
+        int finalHeight = 0; // default: scroll back to dismiss header.
+        // is refreshing, just scroll back to show all the header.
+        if ((mHeaderView.getCurrentState() == HeaderView.STATE.ready || mHeaderView.getCurrentState() == HeaderView.STATE.refreshing) && height > mHeaderView.getStretchHeight()) {
+            finalHeight = mHeaderView.getStretchHeight();
+        }
+
+        mScrollBack = ScrollBack.header;
+        mScroller.startScroll(0, height, 0, finalHeight - height, SCROLL_DURATION);
+        // trigger computeScroll
+        invalidate();
     }
 
     private void updateFooterHeight(float delta) {
@@ -245,8 +209,90 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         mFooterView.setBottomMargin(height);
     }
 
-    public void setWaterDropListViewListener(IWaterDropListViewListener l) {
-        mListViewListener = l;
+    private void resetFooterHeight() {
+        int bottomMargin = mFooterView.getBottomMargin();
+        if (bottomMargin > 0) {
+            mScrollBack = ScrollBack.footer;
+            mScroller.startScroll(0, bottomMargin, 0, -bottomMargin, SCROLL_DURATION);
+            invalidate();
+        }
+    }
+
+    private void startLoadMore() {
+        mPullLoading = true;
+        mFooterView.setState(FooterView.STATE.loading);
+        if (null != mListViewListener) {
+            mListViewListener.onLoadMore();
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mLastY == -1) {
+            mLastY = ev.getRawY();
+        }
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastY = ev.getRawY();
+                isTouchingScreen = true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                final float deltaY = ev.getRawY() - mLastY;
+//                mLastY = ev.getRawY();
+                if (getFirstVisiblePosition() == 0 && (mHeaderView.getVisiableHeight() > 0 || deltaY > 0)) {
+                    updateHeaderHeight(deltaY / OFFSET_RADIO);
+                    invokeOnScrolling();
+                } else if (getLastVisiblePosition() == mTotalItemCount - 1 && (mFooterView.getBottomMargin() > 0 || deltaY < 0)) {
+                    updateFooterHeight(-deltaY / OFFSET_RADIO);
+                }
+                break;
+            default:
+                mLastY = -1;
+                isTouchingScreen = false;
+
+                if (getFirstVisiblePosition() == 0) {
+                    resetHeaderHeight();
+                }
+
+                if (getLastVisiblePosition() == mTotalItemCount - 1) {
+                    if (mEnablePullLoad && mFooterView.getBottomMargin() > PULL_LOAD_MORE_DELTA) {
+                        startLoadMore();
+                    }
+                    resetFooterHeight();
+                }
+                break;
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    /**
+     * Called by a parent to request that a child update its values for mScrollX
+     * and mScrollY if necessary. This will typically be done if the child is
+     * animating a scroll using a {@link Scroller Scroller}
+     * object.
+     */
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()) {
+            if (mScrollBack == ScrollBack.header) {
+                updateHeaderHeight(mScroller.getCurrY());
+                if (mScroller.getCurrY() < 2 && mHeaderView.getCurrentState() == HeaderView.STATE.end) {
+                    //停止滚动了
+                    //逻辑：如果header范围进入了一个极小值内，且当前的状态是end，就把状态置成normal
+                    mHeaderView.updateState(HeaderView.STATE.normal);
+                }
+            } else {
+                mFooterView.setBottomMargin(mScroller.getCurrY());
+            }
+            postInvalidate();
+            invokeOnScrolling();
+        }
+        super.computeScroll();
+    }
+
+    @Override
+    public void setOnScrollListener(OnScrollListener l) {
+        mScrollListener = l;
     }
 
     /**
@@ -278,15 +324,24 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
      */
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        // send to user's listener
         mTotalItemCount = totalItemCount;
         if (null != mScrollListener) {
             mScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }
     }
 
+    public void setWaterDropListViewListener(IWaterDropListViewListener l) {
+        mListViewListener = l;
+    }
+
     @Override
     public void notifyStateChanged(HeaderView.STATE oldState, HeaderView.STATE newState) {
-
+        if (newState == HeaderView.STATE.refreshing) {
+            if (mListViewListener != null) {
+                mListViewListener.onRefresh();
+            }
+        }
     }
 
     public interface OnXScrollListener extends OnScrollListener {

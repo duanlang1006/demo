@@ -198,7 +198,7 @@ public class WaterDropView extends FrameLayout {
      * 完成的百分比
      * @param percent between[0,1]
      */
-    private void updateComleteState(float percent) {
+    public void updateComleteState(float percent) {
         Log.i(TAG, "updateComleteState percent = " + percent);
         if (percent < 0 || percent > 1) {
             throw new IllegalStateException("completion percent should between 0 and 1!");

@@ -1,4 +1,4 @@
-package com.lang.demo.WaterDrop;
+package com.lang.demo.BottomRefresh;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -17,13 +17,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by android on 10/24/15.
+ * Created by android on 10/29/15.
  */
-public class WaterDropActivity extends Activity implements WaterDropListView.IWaterDropListViewListener {
+public class BottomRefreshActivity extends Activity implements BottomRefreshListView.IListViewListener {
     private final String TAG = "duanlang";
 
-    private WaterDropListView mWaterDropListView;
-    private Handler mHandler = new Handler(){
+    private BottomRefreshListView mBottomRefreshListView;
+    private Handler mHandler = new Handler() {
         /**
          * Subclasses must implement this to receive messages.
          *
@@ -32,29 +32,24 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
-                    mWaterDropListView.stopRefresh();
+                    mBottomRefreshListView.stopLoadMore();
                     break;
             }
         }
     };
 
-    private void initActionbar(){
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.show();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.waterdrop_main);
+        setContentView(R.layout.bottomrefresh_listview);
         initActionbar();
-        mWaterDropListView = (WaterDropListView) findViewById(R.id.waterdrop_listview);
-        mWaterDropListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getdata()));
-        mWaterDropListView.setWaterDropListViewListener(this);
+        mBottomRefreshListView = (BottomRefreshListView) findViewById(R.id.bottomrefresh_listview);
+        mBottomRefreshListView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, getdata()));
+        mBottomRefreshListView.setListViewListener(this);
+        mBottomRefreshListView.setPullEnable(true);
     }
 
     private List<String> getdata() {
@@ -67,7 +62,7 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
     }
 
     @Override
-    public void onRefresh() {
+    public void onLoadMore() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
@@ -80,6 +75,12 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
                 }
             }
         });
+    }
+
+    private void initActionbar() {
+        ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.show();
     }
 
     /**
@@ -100,7 +101,7 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);

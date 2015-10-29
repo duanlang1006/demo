@@ -9,11 +9,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <com.lang.demo.WaterDrop.WaterDropListView
-        android:id="@+id/waterdrop_listview"
+    <com.lang.demo.BottomRefresh.BottomRefreshListView
+        android:id="@+id/bottomrefresh_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </com.lang.demo.WaterDrop.WaterDropListView>
+    </com.lang.demo.BottomRefresh.BottomRefreshListView>
 
 
 </RelativeLayout>

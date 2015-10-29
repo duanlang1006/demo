@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.lang.demo.Bezier.BezierActivity;
+import com.lang.demo.BottomRefresh.BottomRefreshActivity;
 import com.lang.demo.WaterDrop.WaterDropActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -15,6 +16,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
     private Button button1;
     private Button button2;
+    private Button button3;
 
     private Intent intent;
 
@@ -39,8 +41,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         button2.setOnClickListener(this);
         button2.setText("水滴特效");
 
-        intent = new Intent(this, WaterDropActivity.class);
-        startActivity(intent);
+        button3 = (Button)findViewById(R.id.button3);
+        button3.setOnClickListener(this);
+        button3.setText("底栏刷新");
+
     }
 
 
@@ -52,6 +56,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         } else if (v.getId() == R.id.button2){
             intent = new Intent(this, WaterDropActivity.class);
             startActivity(intent);
+        } else if (v.getId() == R.id.button3){
+            intent = new Intent(this, BottomRefreshActivity.class);
+            startActivity(intent);
         }
     }
+
 }

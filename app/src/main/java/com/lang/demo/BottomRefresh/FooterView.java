@@ -1,4 +1,4 @@
-package com.lang.demo.WaterDrop;
+package com.lang.demo.BottomRefresh;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.lang.demo.R;
 
 /**
- * Created by android on 10/28/15.
+ * Created by android on 10/29/15.
  */
 public class FooterView extends LinearLayout {
     private final String TAG = "duanlang";
@@ -21,7 +21,6 @@ public class FooterView extends LinearLayout {
     private View mContentView;
     private View mProgressBar;
     private TextView mHintView;
-    private TextView txt_progresstext;
     private LinearLayout layout_progress;
 
     public enum STATE {

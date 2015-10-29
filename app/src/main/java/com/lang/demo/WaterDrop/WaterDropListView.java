@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AbsListView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Scroller;
 
@@ -25,13 +24,8 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
     private Scroller mScroller; // used for scroll back
 
     private HeaderView mHeaderView;
-    private FooterView mFooterView;
 
     private boolean mEnablePullRefresh = true;
-
-    private boolean mIsFooterReady = false;
-    private boolean mEnablePullLoad;
-    private boolean mPullLoading;
 
     private ScrollBack mScrollBack;
     private boolean isTouchingScreen = false;//手指是否触摸屏幕
@@ -71,52 +65,7 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         mHeaderView.setStateChangedListener(this);
         addHeaderView(mHeaderView);
 
-        // init footer view
-        mFooterView = new FooterView(context);
     }
-
-    /**
-     * Sets the data behind this ListView.
-     * <p>
-     * The adapter passed to this method may be wrapped by a {@link WrapperListAdapter},
-     * depending on the ListView features currently in use. For instance, adding
-     * headers and/or footers will cause the adapter to be wrapped.
-     *
-     * @param adapter The ListAdapter which is responsible for maintaining the
-     *                data backing this list and for producing a view to represent an
-     *                item in that data set.
-     * @see #getAdapter()
-     */
-    @Override
-    public void setAdapter(ListAdapter adapter) {
-        // make sure XListViewFooter is the last footer view, and only add once.
-        if (!mIsFooterReady) {
-            mIsFooterReady = true;
-            addFooterView(mFooterView);
-        }
-        super.setAdapter(adapter);
-    }
-
-    public void setPullEnable(boolean pullEnable) {
-        mEnablePullLoad = pullEnable;
-        if (!mEnablePullLoad) {
-            mFooterView.hide();
-            mFooterView.setOnClickListener(null);
-        } else {
-            mPullLoading = false;
-            mFooterView.show();
-            mFooterView.setState(FooterView.STATE.normal);
-            mFooterView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mFooterView.setEnabled(false);
-                    startLoadMore();
-                }
-            });
-        }
-    }
-
-
 
     public void stopRefresh() {
         Log.i(TAG, "stopRefresh");
@@ -130,13 +79,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         }
     }
 
-    public void stopLoadMore() {
-        if (mPullLoading) {
-            mPullLoading = false;
-            mFooterView.setState(FooterView.STATE.normal);
-        }
-        mFooterView.setEnabled(true);
-    }
 
     private void invokeOnScrolling() {
         if (mScrollListener instanceof OnXScrollListener) {
@@ -197,35 +139,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         invalidate();
     }
 
-    private void updateFooterHeight(float delta) {
-        int height = mFooterView.getBottomMargin() + (int) delta;
-        if (mEnablePullLoad && !mPullLoading) {
-            if (height > PULL_LOAD_MORE_DELTA) {
-                mFooterView.setState(FooterView.STATE.ready);
-            } else {
-                mFooterView.setState(FooterView.STATE.normal);
-            }
-        }
-        mFooterView.setBottomMargin(height);
-    }
-
-    private void resetFooterHeight() {
-        int bottomMargin = mFooterView.getBottomMargin();
-        if (bottomMargin > 0) {
-            mScrollBack = ScrollBack.footer;
-            mScroller.startScroll(0, bottomMargin, 0, -bottomMargin, SCROLL_DURATION);
-            invalidate();
-        }
-    }
-
-    private void startLoadMore() {
-        mPullLoading = true;
-        mFooterView.setState(FooterView.STATE.loading);
-        if (null != mListViewListener) {
-            mListViewListener.onLoadMore();
-        }
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mLastY == -1) {
@@ -242,8 +155,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
                 if (getFirstVisiblePosition() == 0 && (mHeaderView.getVisiableHeight() > 0 || deltaY > 0)) {
                     updateHeaderHeight(deltaY / OFFSET_RADIO);
                     invokeOnScrolling();
-                } else if (getLastVisiblePosition() == mTotalItemCount - 1 && (mFooterView.getBottomMargin() > 0 || deltaY < 0)) {
-                    updateFooterHeight(-deltaY / OFFSET_RADIO);
                 }
                 break;
             default:
@@ -254,12 +165,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
                     resetHeaderHeight();
                 }
 
-                if (getLastVisiblePosition() == mTotalItemCount - 1) {
-                    if (mEnablePullLoad && mFooterView.getBottomMargin() > PULL_LOAD_MORE_DELTA) {
-                        startLoadMore();
-                    }
-                    resetFooterHeight();
-                }
                 break;
         }
         return super.onTouchEvent(ev);
@@ -281,8 +186,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
                     //逻辑：如果header范围进入了一个极小值内，且当前的状态是end，就把状态置成normal
                     mHeaderView.updateState(HeaderView.STATE.normal);
                 }
-            } else {
-                mFooterView.setBottomMargin(mScroller.getCurrY());
             }
             postInvalidate();
             invokeOnScrolling();
@@ -351,7 +254,5 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
 
     public interface IWaterDropListViewListener {
         public void onRefresh();
-
-        public void onLoadMore();
     }
 }

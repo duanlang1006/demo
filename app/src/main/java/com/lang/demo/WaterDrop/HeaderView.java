@@ -30,7 +30,7 @@ public class HeaderView extends FrameLayout {
 
     private int stretchHeight;
     private int readyHeight;
-    private static final int DISTANCE_BETWEEN_STRETCH_READY = 250;
+    private static final int DISTANCE_BETWEEN_STRETCH_READY = 200;
 
     private IStateChangedListener mStateChangedListener;
     private WaterDropListView stateChangedListener;
@@ -63,7 +63,7 @@ public class HeaderView extends FrameLayout {
         mProgressBar = (ProgressBar) mContainer.findViewById(R.id.header_progressbar);
         mWaterDropView = (WaterDropView) mContainer.findViewById(R.id.waterdrop);
 
-        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 100);
         addView(mContainer, layoutParams);
         initHeight();
     }

@@ -12,16 +12,15 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 
 import com.lang.demo.R;
 
 /**
  * Created by android on 10/28/15.
  */
-public class WaterDropView extends FrameLayout {
+public class WaterDropView extends View {
     private final String TAG = "duanlang";
 
     private Circle topCircle;
@@ -51,7 +50,6 @@ public class WaterDropView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         initWithContext(context, attrs);
     }
-
 
     private void initWithContext(Context context, AttributeSet attrs) {
         topCircle = new Circle();
@@ -136,7 +134,6 @@ public class WaterDropView extends FrameLayout {
     }
 
     private void makeBezierPath() {
-        Log.i(TAG, "makeBezierPath");
         mPath.reset();
         //获取两圆的两个切线形成的四个切点
         double angle = getAngle();
@@ -179,10 +176,10 @@ public class WaterDropView extends FrameLayout {
      * 上圆半径减速恢复至最大半径
      * 下圆半径减速恢复至最大半径
      * 圆心距减速从最大值减到0(下圆Y从当前位置移动到上圆Y)。
+     *
      * @return
      */
     public Animator createAnimator() {
-        Log.i(TAG, "createAnimator");
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(1, 0).setDuration(BACK_ANIM_DURATION);
         valueAnimator.setInterpolator(new DecelerateInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -196,10 +193,10 @@ public class WaterDropView extends FrameLayout {
 
     /**
      * 完成的百分比
+     *
      * @param percent between[0,1]
      */
     public void updateComleteState(float percent) {
-        Log.i(TAG, "updateComleteState percent = " + percent);
         if (percent < 0 || percent > 1) {
             throw new IllegalStateException("completion percent should between 0 and 1!");
         }

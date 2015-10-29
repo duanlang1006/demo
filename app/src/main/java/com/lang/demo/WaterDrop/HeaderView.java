@@ -27,17 +27,13 @@ public class HeaderView extends FrameLayout {
     private ProgressBar mProgressBar;
     private WaterDropView mWaterDropView;
 
-
     private int stretchHeight;
     private int readyHeight;
     private static final int DISTANCE_BETWEEN_STRETCH_READY = 200;
 
     private IStateChangedListener mStateChangedListener;
-    private WaterDropListView stateChangedListener;
-    private int visiableHeight;
 
     private STATE mState = STATE.normal;
-
     public enum STATE {
         normal,//正常
         stretch,//准备进行拉伸
@@ -45,7 +41,6 @@ public class HeaderView extends FrameLayout {
         refreshing,//刷新
         end//刷新结束，回滚
     }
-
 
     public HeaderView(Context context) {
         super(context);
@@ -139,10 +134,9 @@ public class HeaderView extends FrameLayout {
     }
 
     private void handleStateEnd() {
-        mWaterDropView.setVisibility(View.GONE);
+        mWaterDropView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
     }
-
 
     public void setVisiableHeight(int height) {
         if (height < 0)

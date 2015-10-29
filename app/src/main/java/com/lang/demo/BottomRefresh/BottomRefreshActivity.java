@@ -78,9 +78,11 @@ public class BottomRefreshActivity extends Activity implements BottomRefreshList
     }
 
     private void initActionbar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.show();
+        ActionBar actionBar = this.getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.show();
+        }
     }
 
     /**

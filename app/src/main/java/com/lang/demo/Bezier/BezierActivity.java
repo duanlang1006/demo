@@ -25,10 +25,12 @@ public class BezierActivity extends Activity {
 //        setContentView(new DrawingWithBezier(this));
     }
 
-    private void initActionbar(){
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.show();
+    private void initActionbar() {
+        ActionBar actionBar = this.getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.show();
+        }
     }
 
     /**
@@ -49,7 +51,7 @@ public class BezierActivity extends Activity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);

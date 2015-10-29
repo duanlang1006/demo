@@ -23,16 +23,11 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
     private final String TAG = "duanlang";
 
     private WaterDropListView mWaterDropListView;
-    private Handler mHandler = new Handler(){
-        /**
-         * Subclasses must implement this to receive messages.
-         *
-         * @param msg
-         */
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     mWaterDropListView.stopRefresh();
                     break;
@@ -40,10 +35,12 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
         }
     };
 
-    private void initActionbar(){
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.show();
+    private void initActionbar() {
+        ActionBar actionBar = this.getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.show();
+        }
     }
 
     @Override
@@ -100,7 +97,7 @@ public class WaterDropActivity extends Activity implements WaterDropListView.IWa
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);

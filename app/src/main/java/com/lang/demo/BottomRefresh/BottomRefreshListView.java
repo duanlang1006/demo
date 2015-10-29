@@ -31,13 +31,7 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
     private boolean mEnablePullLoad;
     private boolean mPullLoading;
 
-    private ScrollBack mScrollBack;
-    private boolean isTouchingScreen = false;//手指是否触摸屏幕
     private final static int SCROLL_DURATION = 400; // scroll back duration
-
-    private enum ScrollBack {
-        footer
-    }
 
     private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
     private final static int PULL_LOAD_MORE_DELTA = 50; // when pull up >= 50px
@@ -142,7 +136,6 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
     private void resetFooterHeight() {
         int bottomMargin = mFooterView.getBottomMargin();
         if (bottomMargin > 0) {
-            mScrollBack = ScrollBack.footer;
             mScroller.startScroll(0, bottomMargin, 0, -bottomMargin, SCROLL_DURATION);
             invalidate();
         }
@@ -156,7 +149,6 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastY = ev.getRawY();
-                isTouchingScreen = true;
                 break;
             case MotionEvent.ACTION_MOVE:
                 final float deltaY = ev.getRawY() - mLastY;
@@ -167,7 +159,6 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
                 break;
             default:
                 mLastY = -1;
-                isTouchingScreen = false;
 
                 if (getLastVisiblePosition() == mTotalItemCount - 1) {
                     if (mEnablePullLoad && mFooterView.getBottomMargin() > PULL_LOAD_MORE_DELTA) {
@@ -189,20 +180,11 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            if (mScrollBack == ScrollBack.footer) {
-                mFooterView.setBottomMargin(mScroller.getCurrY());
-            }
+            mFooterView.setBottomMargin(mScroller.getCurrY());
             postInvalidate();
             invokeOnScrolling();
         }
         super.computeScroll();
-    }
-
-    private void invokeOnScrolling() {
-        if (mScrollListener instanceof OnXScrollListener) {
-            OnXScrollListener l = (OnXScrollListener) mScrollListener;
-            l.onXScrolling(this);
-        }
     }
 
     /**
@@ -240,6 +222,12 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
         }
     }
 
+    private void invokeOnScrolling() {
+        if (mScrollListener instanceof OnXScrollListener) {
+            OnXScrollListener l = (OnXScrollListener) mScrollListener;
+            l.onXScrolling(this);
+        }
+    }
 
     public void setListViewListener(IListViewListener l) {
         mListViewListener = l;
@@ -248,7 +236,6 @@ public class BottomRefreshListView extends ListView implements AbsListView.OnScr
     public interface OnXScrollListener extends OnScrollListener {
         public void onXScrolling(View view);
     }
-
 
     public interface IListViewListener {
         public void onLoadMore();

@@ -27,22 +27,10 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
 
     private boolean mEnablePullRefresh = true;
 
-    private ScrollBack mScrollBack;
     private boolean isTouchingScreen = false;//手指是否触摸屏幕
     private final static int SCROLL_DURATION = 400; // scroll back duration
 
-    private enum ScrollBack {
-        header,
-        footer
-    }
-
     private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
-    private final static int PULL_LOAD_MORE_DELTA = 50; // when pull up >= 50px
-
-    // total list items, used to detect is at the bottom of listview.
-    private int mTotalItemCount;
-    private boolean pullEnable;
-
 
     public WaterDropListView(Context context) {
         super(context);
@@ -64,11 +52,9 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
         mHeaderView = new HeaderView(context);
         mHeaderView.setStateChangedListener(this);
         addHeaderView(mHeaderView);
-
     }
 
     public void stopRefresh() {
-        Log.i(TAG, "stopRefresh");
         if (mHeaderView.getCurrentState() == HeaderView.STATE.refreshing) {
             mHeaderView.updateState(HeaderView.STATE.end);
             if (!isTouchingScreen) {
@@ -78,7 +64,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
             throw new IllegalStateException("can not stop refresh while it is not refreshing!");
         }
     }
-
 
     private void invokeOnScrolling() {
         if (mScrollListener instanceof OnXScrollListener) {
@@ -117,7 +102,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
      * 逻辑：1、如果状态处于非refreshing，则回滚到height=0状态2；2、如果状态处于refreshing，则回滚到stretchheight高度
      */
     private void resetHeaderHeight() {
-        Log.i(TAG, "resetHeaderHeight");
         int height = mHeaderView.getVisiableHeight();
         if (height == 0) {
             // not visible.
@@ -133,7 +117,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
             finalHeight = mHeaderView.getStretchHeight();
         }
 
-        mScrollBack = ScrollBack.header;
         mScroller.startScroll(0, height, 0, finalHeight - height, SCROLL_DURATION);
         // trigger computeScroll
         invalidate();
@@ -179,13 +162,11 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
-            if (mScrollBack == ScrollBack.header) {
-                updateHeaderHeight(mScroller.getCurrY());
-                if (mScroller.getCurrY() < 2 && mHeaderView.getCurrentState() == HeaderView.STATE.end) {
-                    //停止滚动了
-                    //逻辑：如果header范围进入了一个极小值内，且当前的状态是end，就把状态置成normal
-                    mHeaderView.updateState(HeaderView.STATE.normal);
-                }
+            updateHeaderHeight(mScroller.getCurrY());
+            if (mScroller.getCurrY() < 2 && mHeaderView.getCurrentState() == HeaderView.STATE.end) {
+                //停止滚动了
+                //逻辑：如果header范围进入了一个极小值内，且当前的状态是end，就把状态置成normal
+                mHeaderView.updateState(HeaderView.STATE.normal);
             }
             postInvalidate();
             invokeOnScrolling();
@@ -228,7 +209,6 @@ public class WaterDropListView extends ListView implements AbsListView.OnScrollL
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         // send to user's listener
-        mTotalItemCount = totalItemCount;
         if (null != mScrollListener) {
             mScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
         }

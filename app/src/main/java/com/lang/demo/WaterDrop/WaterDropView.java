@@ -34,7 +34,6 @@ public class WaterDropView extends View {
 
     private final static int BACK_ANIM_DURATION = 180;
     private final static float STROKE_WIDTH = 2;//边线宽度
-    private double angle;
 
     public WaterDropView(Context context) {
         super(context);
@@ -73,7 +72,7 @@ public class WaterDropView extends View {
             try {
                 if (typedArray.hasValue(R.styleable.WaterDropView_waterdrop_color)) {
                     int waterDropColor = typedArray.getColor(R.styleable.WaterDropView_waterdrop_color, Color.GRAY);
-                    mPaint.setColor(waterDropColor);
+                    mPaint.setColor(waterDropColor);        // mPaint.setColor(Color.GRAY);   ????
                 }
                 if (typedArray.hasValue(R.styleable.WaterDropView_max_circle_radius)) {
                     mMaxCircleRadius = typedArray.getDimensionPixelSize(R.styleable.WaterDropView_max_circle_radius, 0);
@@ -135,8 +134,10 @@ public class WaterDropView extends View {
 
     private void makeBezierPath() {
         mPath.reset();
-        //获取两圆的两个切线形成的四个切点
+        //获得两个圆切线与圆心连线的夹角
         double angle = getAngle();
+
+        //获取两圆的两个切线形成的四个切点
         float top_x1 = (float) (topCircle.getX() - topCircle.getRadius() * Math.cos(angle));
         float top_y1 = (float) (topCircle.getY() + topCircle.getRadius() * Math.sin(angle));
 

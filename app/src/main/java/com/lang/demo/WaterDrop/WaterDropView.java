@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -113,6 +114,7 @@ public class WaterDropView extends View {
         int width = (int) ((mMaxCircleRadius + STROKE_WIDTH) * 2);
         //高度：上圆半径 + 圆心距 + 下圆半径
         int height = (int) Math.ceil(bottomCircle.getY() + bottomCircle.getRadius() + STROKE_WIDTH * 2);
+        Log.i(TAG, "width : " + width + "  height : " + height);
         setMeasuredDimension(width, height);
     }
 
@@ -125,9 +127,14 @@ public class WaterDropView extends View {
     protected void onDraw(Canvas canvas) {
         makeBezierPath();
         canvas.drawPath(mPath, mPaint);
+        Log.i(TAG, "topCircle.getRadius() = " + topCircle.getRadius() + " bottomCircle.getRadius() = " + bottomCircle.getRadius());
         canvas.drawCircle(topCircle.getX(), topCircle.getY(), topCircle.getRadius(), mPaint);
         canvas.drawCircle(bottomCircle.getX(), bottomCircle.getY(), bottomCircle.getRadius(), mPaint);
+//        Matrix m = new Matrix();
+//        float orientationDegree = 2f;
+//        m.setRotate(orientationDegree, topCircle.getX(), topCircle.getY());
         RectF bitmapArea = new RectF(topCircle.getX() - 0.5f * topCircle.getRadius(), topCircle.getY() - 0.5f * topCircle.getRadius(), topCircle.getX() + 0.5f * topCircle.getRadius(), topCircle.getY() + 0.5f * topCircle.getRadius());
+//        arrowBitmap = Bitmap.createBitmap(arrowBitmap,0,0,arrowBitmap.getWidth(),arrowBitmap.getHeight(),m,true);
         canvas.drawBitmap(arrowBitmap, null, bitmapArea, mPaint);
         super.onDraw(canvas);
     }
@@ -210,6 +217,5 @@ public class WaterDropView extends View {
         requestLayout();
         postInvalidate();
     }
-
 
 }

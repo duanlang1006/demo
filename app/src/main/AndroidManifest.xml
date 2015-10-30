@@ -29,6 +29,11 @@
             android:name="com.lang.demo.BottomRefresh.BottomRefreshActivity"
             android:label="@string/BottomRefresh"></activity>
 
+        <activity
+            android:name="com.lang.demo.Shake.ShakeActiviy"
+            android:label="@string/Shake"></activity>
+
     </application>
 
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
 </manifest>

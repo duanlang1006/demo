@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.lang.demo.Bezier.BezierActivity;
 import com.lang.demo.BottomRefresh.BottomRefreshActivity;
+import com.lang.demo.Shake.ShakeActiviy;
 import com.lang.demo.WaterDrop.WaterDropActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -17,6 +18,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Button button1;
     private Button button2;
     private Button button3;
+    private Button button4;
 
     private Intent intent;
 
@@ -28,36 +30,42 @@ public class MainActivity extends Activity implements View.OnClickListener {
         init();
     }
 
-    private void init(){
+    private void init() {
         initButtons();
     }
 
-    private void initButtons(){
-        button1 = (Button)findViewById(R.id.button1);
+    private void initButtons() {
+        button1 = (Button) findViewById(R.id.button1);
         button1.setOnClickListener(this);
         button1.setText("贝塞尔曲线");
 
-        button2 = (Button)findViewById(R.id.button2);
+        button2 = (Button) findViewById(R.id.button2);
         button2.setOnClickListener(this);
         button2.setText("水滴特效");
 
-        button3 = (Button)findViewById(R.id.button3);
+        button3 = (Button) findViewById(R.id.button3);
         button3.setOnClickListener(this);
         button3.setText("底栏刷新");
 
+        button4 = (Button) findViewById(R.id.button4);
+        button4.setOnClickListener(this);
+        button4.setText("摇一摇");
     }
 
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.button1){
+        if (v.getId() == R.id.button1) {
             intent = new Intent(this, BezierActivity.class);
             startActivity(intent);
-        } else if (v.getId() == R.id.button2){
+        } else if (v.getId() == R.id.button2) {
             intent = new Intent(this, WaterDropActivity.class);
             startActivity(intent);
-        } else if (v.getId() == R.id.button3){
+        } else if (v.getId() == R.id.button3) {
             intent = new Intent(this, BottomRefreshActivity.class);
+            startActivity(intent);
+        } else if (v.getId() == R.id.button4) {
+            intent = new Intent(this, ShakeActiviy.class);
             startActivity(intent);
         }
     }

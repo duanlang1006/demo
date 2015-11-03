@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.lang.demo.Bezier.BezierActivity;
 import com.lang.demo.BottomRefresh.BottomRefreshActivity;
+import com.lang.demo.LuckyDraw.LuckyDrawActivity;
 import com.lang.demo.Shake.ShakeActiviy;
 import com.lang.demo.WaterDrop.WaterDropActivity;
 
@@ -19,6 +20,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private Button button2;
     private Button button3;
     private Button button4;
+    private Button button5;
 
     private Intent intent;
 
@@ -50,6 +52,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         button4 = (Button) findViewById(R.id.button4);
         button4.setOnClickListener(this);
         button4.setText("摇一摇");
+
+        button5 = (Button) findViewById(R.id.button5);
+        button5.setOnClickListener(this);
+        button5.setText("九宫格随机抽奖");
     }
 
 
@@ -66,6 +72,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             startActivity(intent);
         } else if (v.getId() == R.id.button4) {
             intent = new Intent(this, ShakeActiviy.class);
+            startActivity(intent);
+        } else if (v.getId() == R.id.button5) {
+            intent = new Intent(this, LuckyDrawActivity.class);
             startActivity(intent);
         }
     }

@@ -33,6 +33,9 @@
             android:name="com.lang.demo.Shake.ShakeActiviy"
             android:label="@string/Shake"></activity>
 
+        <activity
+            android:name="com.lang.demo.LuckyDraw.LuckyDrawActivity"
+            android:label="@string/Shake" />
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>

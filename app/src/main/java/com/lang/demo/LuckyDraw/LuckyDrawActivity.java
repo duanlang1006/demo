@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -24,9 +22,9 @@ import java.util.Random;
  */
 public class LuckyDrawActivity extends Activity {
     private final String TAG = "LuckyDraw";
+    
+    private boolean readyflag = true;
 
-
-    public static final int MESSAGE_9 = 9;
     public static final int MESSAGE_1 = 1;
     public static final int MESSAGE_2 = 2;
     public static final int MESSAGE_3 = 3;
@@ -35,15 +33,6 @@ public class LuckyDrawActivity extends Activity {
     public static final int MESSAGE_6 = 6;
     public static final int MESSAGE_7 = 7;
     public static final int MESSAGE_8 = 8;
-
-    public static final int MESSAGE_11 = 11;
-    public static final int MESSAGE_22 = 22;
-    public static final int MESSAGE_33 = 33;
-    public static final int MESSAGE_44 = 44;
-    public static final int MESSAGE_55 = 55;
-    public static final int MESSAGE_66 = 66;
-    public static final int MESSAGE_77 = 77;
-    public static final int MESSAGE_88 = 88;
 
     public static final int MESSAGE_STOP = 10;
 
@@ -83,31 +72,6 @@ public class LuckyDrawActivity extends Activity {
     String string7 = "傻盼";
     String string8 = "AA咯";
 
-    /**
-     * Called when the activity is starting.  This is where most initialization
-     * should go: calling {@link #setContentView(int)} to inflate the
-     * activity's UI, using {@link #findViewById} to programmatically interact
-     * with widgets in the UI, calling
-     * {@link #managedQuery(Uri, String[], String, String[], String)} to retrieve
-     * cursors for data being displayed, etc.
-     * <p>
-     * <p>You can call {@link #finish} from within this function, in
-     * which case onDestroy() will be immediately called without any of the rest
-     * of the activity lifecycle ({@link #onStart}, {@link #onResume},
-     * {@link #onPause}, etc) executing.
-     * <p>
-     * <p><em>Derived classes must call through to the super class's
-     * implementation of this method.  If they do not, an exception will be
-     * thrown.</em></p>
-     *
-     * @param savedInstanceState If the activity is being re-initialized after
-     *                           previously being shut down then this Bundle contains the data it most
-     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * @see #onStart
-     * @see #onSaveInstanceState
-     * @see #onRestoreInstanceState
-     * @see #onPostCreate
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,11 +114,8 @@ public class LuckyDrawActivity extends Activity {
         wheel6 = BitmapFactory.decodeResource(getResources(), R.drawable.wheel6);
         wheel7 = BitmapFactory.decodeResource(getResources(), R.drawable.wheel7);
         wheel8 = BitmapFactory.decodeResource(getResources(), R.drawable.wheel8);
-
     }
 
-
-    private boolean readyflag = true;
     Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -189,39 +150,6 @@ public class LuckyDrawActivity extends Activity {
                 case MESSAGE_8:
                     iv.setImageBitmap(wheel8);
                     tv8.setText(string8);
-                    break;
-
-                case MESSAGE_11:
-                    flag = 1;
-//                    dialog();
-                    break;
-                case MESSAGE_22:
-                    flag = 2;
-//                    dialog();
-                    break;
-                case MESSAGE_33:
-                    flag = 3;
-//                    dialog();
-                    break;
-                case MESSAGE_44:
-                    flag = 4;
-//                    dialog();
-                    break;
-                case MESSAGE_55:
-                    flag = 5;
-//                    dialog();
-                    break;
-                case MESSAGE_66:
-                    flag = 6;
-//                    dialog();
-                    break;
-                case MESSAGE_77:
-                    flag = 7;
-//                    dialog();
-                    break;
-                case MESSAGE_88:
-                    flag = 8;
-//                    dialog();
                     break;
 
                 case MESSAGE_STOP:
@@ -279,13 +207,13 @@ public class LuckyDrawActivity extends Activity {
                     readyflag = false;
                     tv9.setText("running");
                     Random random = new Random();
-                    number = random.nextInt((8)) + 1;
-                    Log.i("chz", "" + number);
+                    number = random.nextInt(8) + 1;
+
                     new Thread(new Runnable() {
                         public void run() {
                             Random random = new Random();
                             int num = random.nextInt((8));
-                            Log.i("chz", "" + (num + 3));
+
                             while (number < 60 + num) {
                                 Message message = new Message();
                                 switch (number % 8) {
@@ -319,11 +247,10 @@ public class LuckyDrawActivity extends Activity {
                                     default:
                                         break;
                                 }
+
                                 number++;
-//    					Bundle bundle = new Bundle();
-//    		    		bundle.putString("msg", "chzlovehp");
-//    		    		message.setData(bundle);
                                 mHandler.sendMessage(message);
+
                                 if (number < 50) {
                                     try {
                                         Thread.sleep(100);
@@ -357,54 +284,12 @@ public class LuckyDrawActivity extends Activity {
                         }
                     }).start();
                 }
-
             }
 
-            //zuoshang
-            if (event.getX() > width / 2 - 180 && event.getX() < width / 2 - 60
-                    && event.getY() > height / 2 - 180 && event.getY() < height / 2 - 60) {
-                msg.what = MESSAGE_11;
-            }
-            //zhongshang
-            if (event.getX() > width / 2 - 60 && event.getX() < width / 2 + 60
-                    && event.getY() > height / 2 - 180 && event.getY() < height / 2 - 60) {
-                msg.what = MESSAGE_22;
-            }
-            //youshang
-            if (event.getX() > width / 2 + 60 && event.getX() < width / 2 + 180
-                    && event.getY() > height / 2 - 180 && event.getY() < height / 2 - 60) {
-                msg.what = MESSAGE_33;
-            }
-            //zhongzuo
-            if (event.getX() > width / 2 - 180 && event.getX() < width / 2 - 60
-                    && event.getY() > height / 2 - 60 && event.getY() < height / 2 + 60) {
-                msg.what = MESSAGE_88;
-            }
-            //zhongyou
-            if (event.getX() > width / 2 + 60 && event.getX() < width / 2 + 180
-                    && event.getY() > height / 2 - 60 && event.getY() < height / 2 + 60) {
-                msg.what = MESSAGE_44;
-            }
-            //zuoxia
-            if (event.getX() > width / 2 - 180 && event.getX() < width / 2 - 60
-                    && event.getY() > height / 2 + 60 && event.getY() < height / 2 + 180) {
-                msg.what = MESSAGE_77;
-            }
-            //zhongxia
-            if (event.getX() > width / 2 - 60 && event.getX() < width / 2 + 60
-                    && event.getY() > height / 2 + 60 && event.getY() < height / 2 + 180) {
-                msg.what = MESSAGE_66;
-            }
-            //youxia
-            if (event.getX() > width / 2 + 60 && event.getX() < width / 2 + 180
-                    && event.getY() > height / 2 + 60 && event.getY() < height / 2 + 180) {
-                msg.what = MESSAGE_55;
-            }
             mHandler.sendMessage(msg);
         }
 
         return super.onTouchEvent(event);
-
     }
 
 

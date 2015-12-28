@@ -22,7 +22,7 @@ import java.util.Random;
  */
 public class LuckyDrawActivity extends Activity {
     private final String TAG = "LuckyDraw";
-    
+
     private boolean readyflag = true;
 
     public static final int MESSAGE_1 = 1;

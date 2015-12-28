@@ -36,6 +36,11 @@
         <activity
             android:name="com.lang.demo.LuckyDraw.LuckyDrawActivity"
             android:label="@string/LuckyDraw" />
+
+        <activity
+            android:name=".RecycleView.RecyclerViewActivity"
+            android:label="@string/RecyclerView"
+            android:theme="@style/RecylerTheme" />
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>

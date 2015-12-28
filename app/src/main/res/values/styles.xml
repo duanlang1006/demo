@@ -5,4 +5,8 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="RecylerTheme" parent="AppTheme">
+        <item name="android:listDivider">@drawable/divider_bg</item>
+    </style>
+
 </resources>

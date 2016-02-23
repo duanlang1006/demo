@@ -13,6 +13,7 @@ import com.lang.demo.LuckyDraw.LuckyDrawActivity;
 import com.lang.demo.RecycleView.RecyclerViewActivity;
 import com.lang.demo.Shake.ShakeActiviy;
 import com.lang.demo.WaterDrop.WaterDropActivity;
+import com.lang.demo.loacation.LocationActivity;
 
 public class MainActivity extends Activity implements View.OnClickListener {
     private final String TAG = "Main";
@@ -53,7 +54,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         Button button6 = (Button) findViewById(R.id.button6);
         button6.setOnClickListener(this);
-        button6.setText("Recycler View");
+        button6.setText("瀑布流");
+
+        Button button7 = (Button) findViewById(R.id.button7);
+        button7.setOnClickListener(this);
+        button7.setText("经纬度");
     }
 
 
@@ -77,6 +82,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
             startActivity(intent);
         } else if (v.getId() == R.id.button6) {
             intent = new Intent(this, RecyclerViewActivity.class);
+            startActivity(intent);
+        } else if (v.getId() == R.id.button7) {
+            intent = new Intent(this, LocationActivity.class);
             startActivity(intent);
         }
     }

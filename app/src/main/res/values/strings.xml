@@ -7,7 +7,9 @@
     <string name="Shake">摇一摇</string>
     <string name="LuckyDraw">九宫格随机抽奖</string>
 
-    <string name="RecyclerView">Recycler View</string>
+    <string name="RecyclerView">瀑布流</string>
+
+    <string name="Location">经纬度</string>
 
 
     <string name="WaterDrop">水滴特效</string>

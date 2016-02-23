@@ -41,7 +41,14 @@
             android:name=".RecycleView.RecyclerViewActivity"
             android:label="@string/RecyclerView"
             android:theme="@style/RecylerTheme" />
+
+        <activity
+            android:name=".loacation.LocationActivity"
+            android:label="@string/Location" />
+
     </application>
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
 </manifest>

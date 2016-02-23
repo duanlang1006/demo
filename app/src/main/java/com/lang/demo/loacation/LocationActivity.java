@@ -153,8 +153,6 @@ public class LocationActivity extends Activity {
                     break;
             }
         }
-
-        ;
     };
 
     /**
